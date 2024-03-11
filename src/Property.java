@@ -8,4 +8,6 @@ public class Property {
     private int number;
     private int floor;
     private User publisher;
+
+    public User getPublisher() {return this.publisher;}
 }
