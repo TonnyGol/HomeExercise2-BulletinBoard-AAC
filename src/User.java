@@ -11,6 +11,7 @@ public class User {
         this.isMediator = isMediator;
     }
 
+    //Complexity - O(1)
     public String getUserName() {return this.username;}
 
     public String getPassword() {return this.password;}

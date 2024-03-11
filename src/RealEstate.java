@@ -152,6 +152,7 @@ public class RealEstate {
         }while (userInput != END_PROGRAM);
     }
 
+    //Complex
     boolean postNewProperty(User user){
         boolean canPost = true;
         final int postLimit = user.getIsMediator() ? 5 : 2;

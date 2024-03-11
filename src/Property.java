@@ -9,5 +9,6 @@ public class Property {
     private int floor;
     private User publisher;
 
+    //Complexist - O(1)
     public User getPublisher() {return this.publisher;}
 }

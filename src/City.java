@@ -7,6 +7,7 @@ public class City {
         return "Name: " + this.name + " Region: " + this.region;
     }
 
+    //Complexity - O(1)
     public String getName() {return this.name;}
 
     public String[] getStreets(){return this.streets;}
