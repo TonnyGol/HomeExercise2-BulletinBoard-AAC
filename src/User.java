@@ -15,6 +15,6 @@ public class User {
     public String getUserName() {return this.username;}
 
     public String getPassword() {return this.password;}
-
+    public String getPhoneNumber(){return this.phoneNum;}
     public boolean getIsMediator(){return this.isMediator;}
 }
