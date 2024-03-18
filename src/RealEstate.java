@@ -14,10 +14,11 @@ public class RealEstate {
     private static final String[] SPECIAL_CHARACTER_BANK = {"$", "_", "%"};
     private static final int[] BANK_OF_DIGITS = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-    private static final String HOUSE = "House";
-    private static final String APARTMENT = "Apartment";
+    private static final String HOUSE = "Private House";
+    private static final String APARTMENT = "Regular Apartment";
     private static final String PENTHOUSE = "Penthouse";
     private static final String VALID_PHONE_PREFIX = "05";
+    private static final String IGNORE_SEARCH = "-999";
     private static final int VALID_PASSWORD_LEN = 5;
     private static final int VALID_PHONE_NUMBER_LEN = 10;
     //Main Menu Options
@@ -45,7 +46,6 @@ public class RealEstate {
             String region = CITY_REGION_BANK[random.nextInt(3)];
             this.cities[i] = new City(CITY_NAME_BANK[i], region);
         }
-        showMainMenu();
     }
     //Complexity - O(n)
     private User login(){
@@ -187,7 +187,7 @@ public class RealEstate {
             System.out.println("No properties to remove");
         }else {
             int propertyNum;
-            printProperties(user);
+            printUserProperties(user);
             System.out.println("Enter property number to remove:");
             propertyNum = scanner.nextInt();
             scanner.nextLine();
@@ -210,7 +210,7 @@ public class RealEstate {
         }
     }
     //Complexity - O(n)
-    private void printProperties (User user){
+    private void printUserProperties(User user){
         for (int i = 0; i < this.properties.length; i++){
             if (this.properties[i].getPublisher().getUserName().equals(user.getUserName())){
                 System.out.println("("+this.properties[i].getPropertyNumber()+")"+" "+this.properties[i]);
@@ -240,7 +240,7 @@ public class RealEstate {
                 System.out.println("Enter street name:");
                 String streetChoice = scanner.nextLine();
                 if (streetChoice.equals(checkIfStreetExists(validCity,streetChoice))){
-                    System.out.println("1. Apartment ");
+                    System.out.println("1. Regular Apartment ");
                     System.out.println("2. Penthouse");
                     System.out.println("3. House");
                     String propertyType = scanner.nextLine();
@@ -269,7 +269,7 @@ public class RealEstate {
         return canPost;
     }
     //Complexity - O(1)
-    private void propertySaved(boolean isSaved){
+    private void validatePost(boolean isSaved){
         if (isSaved){
             System.out.println("Property post saved successfully");
         }else {
@@ -278,36 +278,21 @@ public class RealEstate {
     }
     //Complexity - O(n)
     private void createProperty(int floor, User publisher, City city, String street, String type){
-        int propertyNumber, rooms;
-
-        String rentOrSale, isForRent, price;
+        int propertyNumber, rooms, price;
+        String rentOrSale, isForRent;
         System.out.println("Enter number of rooms:");
         rooms = scanner.nextInt();
         scanner.nextLine();
         System.out.println("Enter property number:");
         propertyNumber = scanner.nextInt();
         scanner.nextLine();
-        System.out.println("Is the property for sale or rent? S/R");
+        System.out.println("Is the property for sale or rent? S- Sale / R- Rent");
         rentOrSale = scanner.nextLine();
         isForRent = rentOrSale.toUpperCase().equals("R") ? "for rent" : "for sale";
         System.out.println("Enter the price for the property:");
-        price = scanner.nextLine();
-        price = addCommasToPrice(price);
+        price = scanner.nextInt();
         Property property = new Property(city, street, rooms, price, type, isForRent, propertyNumber, floor, publisher);
         addProperty(property);
-    }
-    //Complexity - O(n)
-    private String addCommasToPrice(String price) {
-        String result = "";
-        char digit;
-        for (int i = 1; i <= price.length(); i++) {
-            digit = price.charAt(price.length() - i);
-            if (i % 3 == 1 && i > 1) {
-                result = "," + result;
-            }
-            result = digit + result;
-        }
-        return result;
     }
     //Complexity - O(n)
     private void addProperty(Property property){
@@ -357,6 +342,36 @@ public class RealEstate {
         return cityExists;
     }
     //Complexity -
+    private Property[] search (){
+        Property[] search = null;
+        int searchIndex = 0;
+        String propertyType, rentOrSale, isForRent;
+        int rooms, minPrice, maxPrice;
+        System.out.println("Is the property for sale or rent? (R- Rent / S- Sale / -999 -> ignore)");
+        rentOrSale = scanner.nextLine();
+        if (!rentOrSale.equals(IGNORE_SEARCH)) {
+            isForRent = rentOrSale.toUpperCase().equals("R") ? "for rent" : "for sale";
+        }else {
+            isForRent = IGNORE_SEARCH;
+        }
+        System.out.println("What is the property type? (Private House / Regular Apartment / Penthouse / -999 -> ignore)");
+        propertyType = scanner.nextLine();
+        System.out.println("How many rooms for the property?");
+        rooms = scanner.nextInt();
+        scanner.nextLine();
+        System.out.println("Enter price range (min-max)");
+        System.out.println("Enter min:");
+        minPrice = scanner.nextInt();
+        scanner.nextLine();
+        System.out.println("Enter max:");
+        maxPrice = scanner.nextInt();
+        scanner.nextLine();
+
+        // TO DO: Add run on properties with filters.
+
+        return search;
+    }
+    //Complexity -
     public void showUserMenu(User user){
         if (user == null){
             System.out.println("Wrong username/password.");
@@ -373,10 +388,10 @@ public class RealEstate {
                 userInput = scanner.nextInt();
                 scanner.nextLine();
                 switch (userInput){
-                    case POST_PROPERTY -> propertySaved(postNewProperty(user));
+                    case POST_PROPERTY -> validatePost(postNewProperty(user));
                     case REMOVE_PROPERTY_AD -> removeProperty(user);
                     case SHOW_ALL_PROPERTIES -> printAllProperties();
-                    case ALL_USER_PROPERTIES -> printProperties (user);
+                    case ALL_USER_PROPERTIES -> printUserProperties(user);
                     case SEARCH_FOR_PROPERTY -> System.out.println();
                     case LOGOUT -> System.out.println("Logged out successfully");
                     default -> System.out.println("Wrong input, try again");

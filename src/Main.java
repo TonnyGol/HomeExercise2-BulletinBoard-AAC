@@ -1,6 +1,7 @@
 public class Main {
     public static void main(String[] args) {
-        RealEstate test = new RealEstate();
+        RealEstate bulletinBoard = new RealEstate();
+        bulletinBoard.showMainMenu();
     }
 
 }
