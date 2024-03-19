@@ -9,6 +9,7 @@ public class Property {
     private int floor;
     private User publisher;
 
+    //Complexity - O(1)
     public Property(City city, String street, int rooms, int price, String type, String isForRent,
                     int propertyNumber, int floor, User publisher){
         this.city = city;
@@ -21,21 +22,10 @@ public class Property {
         this.floor = floor;
         this.publisher = publisher;
     }
-    //Complexity - O(n)
-    private String addCommasToPrice(String price) {
-        String result = "";
-        char digit;
-        for (int i = 1; i <= price.length(); i++) {
-            digit = price.charAt(price.length() - i);
-            if (i % 3 == 1 && i > 1) {
-                result = "," + result;
-            }
-            result = digit + result;
-        }
-        return result;
-    }
+
+    //Complexity - O(1)
     public String toString(){
-        String propertyInfo = this.city.getName() +" - "+this.street+"."+"\nType: "+this.type+" - "+this.isForRent+
+        String propertyInfo = this.city.getName() +" - "+this.street+" "+ this.getPropertyNumber()+"."+"\n"+this.type+" - "+this.isForRent+
                 ": "+this.rooms+" rooms";
         if (this.floor != 0){
             propertyInfo += ", floor "+this.floor;
@@ -49,12 +39,30 @@ public class Property {
         }
         return propertyInfo;
     }
-    //Complexist - O(1)
+
+    //Complexity - O(n)
+    private String addCommasToPrice(String price) {
+        String result = "";
+        char digit;
+        for (int i = 1; i <= price.length(); i++) {
+            digit = price.charAt(price.length() - i);
+            if (i % 3 == 1 && i > 1) {
+                result = "," + result;
+            }
+            result = digit + result;
+        }
+        return result;
+    }
+    //Complexity - O(1)
     public User getPublisher() {return this.publisher;}
     //Complexity - O(1)
     public int getPropertyNumber(){return this.number;}
+    //Complexity - O(1)
     public String getIsForRent(){return this.isForRent;}
+    //Complexity - O(1)
     public String getType(){return this.type;}
+    //Complexity - O(1)
     public int getRooms(){return this.rooms;}
+    //Complexity - O(1)
     public int getPrice(){return this.price;}
 }

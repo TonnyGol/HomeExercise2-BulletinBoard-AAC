@@ -3,16 +3,19 @@ public class City {
     private String region;
     private String[] streets;
 
+    //Complexity - O(1)
     public City(String name, String region){
         this.name = name;
         this.region = region;
         this.streets = new String[0];
     }
+    //Complexity - O(1)
     public City(String name, String region, String[] streets){
         this.name = name;
         this.region = region;
         this.streets = streets;
     }
+
     //Complexity - O(1)
     public String toString(){
         return "Name: " + this.name + " Region: " + this.region;

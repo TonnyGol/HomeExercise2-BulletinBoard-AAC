@@ -1,3 +1,5 @@
+import java.util.Objects;
+import java.util.Properties;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -22,18 +24,19 @@ public class RealEstate {
     private static final int VALID_PASSWORD_LEN = 5;
     private static final int VALID_PHONE_NUMBER_LEN = 10;
     //Main Menu Options
-    private static final int CREATE_ACCOUNT = 1;
-    private static final int LOGIN = 2;
-    private static final int END_PROGRAM = 3;
+    private static final String CREATE_ACCOUNT = "1";
+    private static final String LOGIN = "2";
+    private static final String END_PROGRAM = "3";
     //User Menu Options
-    private static final int POST_PROPERTY= 1;
-    private static final int REMOVE_PROPERTY_AD = 2;
-    private static final int SHOW_ALL_PROPERTIES = 3;
-    private static final int ALL_USER_PROPERTIES = 4;
-    private static final int SEARCH_FOR_PROPERTY = 5;
-    private static final int LOGOUT = 6;
+    private static final String POST_PROPERTY= "1";
+    private static final String REMOVE_PROPERTY_AD = "2";
+    private static final String SHOW_ALL_PROPERTIES = "3";
+    private static final String ALL_USER_PROPERTIES = "4";
+    private static final String SEARCH_FOR_PROPERTY = "5";
+    private static final String LOGOUT = "6";
 
 
+    //Complexity - O(n)
     public RealEstate(){
         Random random = new Random();
         this.users = new User[0];
@@ -47,26 +50,26 @@ public class RealEstate {
             this.cities[i] = new City(CITY_NAME_BANK[i], region);
         }
     }
-    //Complexity - O(n)
-    private User login(){
-        String username, password;
-        User user = null;
-        System.out.println("Enter your username");
-        username = scanner.nextLine();
-        System.out.println("Enter your password");
-        password = scanner.nextLine();
-        for (int i=0; i<this.users.length;i++){
-            if(this.users[i].getUserName().equals(username)){
-                if (this.users[i].getPassword().equals(password)){
-                    user = this.users[i];
-                    break;
-                }
+
+    //Complexity - O(n^2)
+    public void showMainMenu(){
+        String userInput;
+        do{
+            System.out.println("Welcome to the main menu!");
+            System.out.println("1- Create User");
+            System.out.println("2- Login User");
+            System.out.println("3- End Program");
+            userInput = scanner.nextLine();
+            switch (userInput){
+                case CREATE_ACCOUNT -> createUser();
+                case LOGIN -> showUserMenu(login());
+                case END_PROGRAM -> System.out.println("Ending program...");
+                default -> System.out.println("Wrong input, try again");
             }
-        }
-        return user;
+        }while (!userInput.equals(END_PROGRAM));
     }
     //Complexity - O(n^2)
-    void createUser(){
+    private void createUser(){
         String username, password, phone, mediatorIndicate;
         boolean isMediator = false;
         do {
@@ -100,6 +103,24 @@ public class RealEstate {
         }
         tempUsers[tempUsers.length - 1] = user;
         this.users = tempUsers;
+    }
+    //Complexity - O(n)
+    private User login(){
+        String username, password;
+        User user = null;
+        System.out.println("Enter your username");
+        username = scanner.nextLine();
+        System.out.println("Enter your password");
+        password = scanner.nextLine();
+        for (int i=0; i<this.users.length;i++){
+            if(this.users[i].getUserName().equals(username)){
+                if (this.users[i].getPassword().equals(password)){
+                    user = this.users[i];
+                    break;
+                }
+            }
+        }
+        return user;
     }
     //Complexity - O(n)
     private boolean isUsernameTaken(String username){
@@ -157,68 +178,37 @@ public class RealEstate {
         }
         return result;
     }
-    //Complexity -
-    public void showMainMenu(){
-        int userInput;
-        do{
-            System.out.println("Welcome to the main menu!");
-            System.out.println("1- Create User");
-            System.out.println("2- Login User");
-            System.out.println("3- End Program");
-            userInput = scanner.nextInt();
-            scanner.nextLine();
-            switch (userInput){
-                case CREATE_ACCOUNT -> createUser();
-                case LOGIN -> showUserMenu(login());
-                case END_PROGRAM -> System.out.println("Ending program...");
-                default -> System.out.println("Wrong input, try again");
-            }
-        }while (userInput != END_PROGRAM);
-    }
-    //Complexity - O(n)
-    void removeProperty(User user){
-        int publishedProperties = 0;
-        for (int i = 0; i < this.properties.length; i++){
-            if (this.properties[i].getPublisher().getUserName().equals(user.getUserName())){
-                publishedProperties++;
-            }
-        }
-        if (publishedProperties == 0){
-            System.out.println("No properties to remove");
-        }else {
-            int propertyNum;
-            printUserProperties(user);
-            System.out.println("Enter property number to remove:");
-            propertyNum = scanner.nextInt();
-            scanner.nextLine();
-            int tempIndex = 0;
-            Property[] temp = new Property[this.properties.length - 1];
-            for (int i = 0; i < this.properties.length; i++){
-                if (this.properties[i].getPropertyNumber() != propertyNum && temp.length >= 1){
-                    temp[tempIndex] = this.properties[i];
-                    tempIndex++;
+
+    //Complexity - O(n^2)
+    public void showUserMenu(User user){
+        if (user == null){
+            System.out.println("Wrong username/password.");
+        } else {
+            String userInput;
+            do{
+                System.out.println("Welcome to the Bulletin Board!");
+                System.out.println("1- Publish Property");
+                System.out.println("2- Remove property advertisement");
+                System.out.println("3- Show all properties");
+                System.out.println("4- Show all user properties");
+                System.out.println("5- Search for property");
+                System.out.println("6- Logout");
+                userInput = scanner.nextLine();
+                switch (userInput){
+                    case POST_PROPERTY -> validatePost(postNewProperty(user));
+                    case REMOVE_PROPERTY_AD -> removeProperty(user);
+                    case SHOW_ALL_PROPERTIES -> printAllProperties();
+                    case ALL_USER_PROPERTIES -> printUserProperties(user);
+                    case SEARCH_FOR_PROPERTY -> printFilteredProperties(search());
+                    case LOGOUT -> System.out.println("Logged out successfully");
+                    default -> System.out.println("Wrong input, try again");
                 }
-            }
-            this.properties = temp;
+            }while (!userInput.equals(LOGOUT));
         }
+
     }
     //Complexity - O(n)
-    private void printAllProperties(){
-        System.out.println("List of all properties");
-        for (int i = 0; i < this.properties.length; i++){
-            System.out.println(i+1+". "+this.properties[i]);
-        }
-    }
-    //Complexity - O(n)
-    private void printUserProperties(User user){
-        for (int i = 0; i < this.properties.length; i++){
-            if (this.properties[i].getPublisher().getUserName().equals(user.getUserName())){
-                System.out.println("("+this.properties[i].getPropertyNumber()+")"+" "+this.properties[i]);
-            }
-        }
-    }
-    //Complexity - O(n)
-    boolean postNewProperty(User user){
+    private boolean postNewProperty(User user){
         boolean canPost = true;
         final int postLimit = user.getIsMediator() ? 5 : 2;
         int postCount = 0;
@@ -242,7 +232,7 @@ public class RealEstate {
                 if (streetChoice.equals(checkIfStreetExists(validCity,streetChoice))){
                     System.out.println("1. Regular Apartment ");
                     System.out.println("2. Penthouse");
-                    System.out.println("3. House");
+                    System.out.println("3. Private House");
                     String propertyType = scanner.nextLine();
                     int floor = 0;
                     if (propertyType.equals("3")){
@@ -268,14 +258,6 @@ public class RealEstate {
         }
         return canPost;
     }
-    //Complexity - O(1)
-    private void validatePost(boolean isSaved){
-        if (isSaved){
-            System.out.println("Property post saved successfully");
-        }else {
-            System.out.println("Failed to save property");
-        }
-    }
     //Complexity - O(n)
     private void createProperty(int floor, User publisher, City city, String street, String type){
         int propertyNumber, rooms, price;
@@ -291,6 +273,7 @@ public class RealEstate {
         isForRent = rentOrSale.toUpperCase().equals("R") ? "for rent" : "for sale";
         System.out.println("Enter the price for the property:");
         price = scanner.nextInt();
+        scanner.nextLine();
         Property property = new Property(city, street, rooms, price, type, isForRent, propertyNumber, floor, publisher);
         addProperty(property);
     }
@@ -303,15 +286,82 @@ public class RealEstate {
         temp[temp.length - 1] = property;
         this.properties = temp;
     }
+    //Complexity - O(1)
+    private void validatePost(boolean isSaved){
+        if (isSaved){
+            System.out.println("Property post saved successfully");
+        }else {
+            System.out.println("Failed to save property");
+        }
+    }
     //Complexity - O(n)
-    public void printAllCities(){
+    private void removeProperty(User user){
+        int publishedProperties = 0;
+        for (int i = 0; i < this.properties.length; i++){
+            if (this.properties[i].getPublisher().getUserName().equals(user.getUserName())){
+                publishedProperties++;
+            }
+        }
+        if (publishedProperties == 0){
+            System.out.println("No properties to remove");
+        }else {
+            String propertyNum;
+            printUserProperties(user);
+            System.out.println("Enter property number to remove:");
+            propertyNum = scanner.nextLine();
+            int tempIndex = 0;
+            if (checkPropertyByNumber(propertyNum)) {
+                Property[] temp = new Property[this.properties.length - 1];
+                if (this.properties.length == 1) {
+                    this.properties = temp;
+                } else {
+                    for (int i = 0; i < this.properties.length; i++) {
+                        if (this.properties[i].getPropertyNumber() != Integer.parseInt(propertyNum)) {
+                            temp[tempIndex] = this.properties[i];
+                            tempIndex++;
+                        }
+                    }
+                    this.properties = temp;
+                }
+            } else {
+                System.out.println("Property number doesn't exist");
+            }
+        }
+    }
+    private boolean checkPropertyByNumber(String number){
+        boolean isExists = false;
+        for (int i = 0; i < this.properties.length; i++){
+            if (this.properties[i].getPropertyNumber() == Integer.parseInt(number)){
+                isExists = true;
+                break;
+            }
+        }
+        return isExists;
+    }
+    //Complexity - O(n)
+    private void printAllProperties(){
+        System.out.println("List of all properties");
+        for (int i = 0; i < this.properties.length; i++){
+            System.out.println(i+1+". "+this.properties[i]);
+        }
+    }
+    //Complexity - O(n)
+    private void printUserProperties(User user){
+        for (int i = 0; i < this.properties.length; i++){
+            if (this.properties[i].getPublisher().getUserName().equals(user.getUserName())){
+                System.out.println(this.properties[i]);
+            }
+        }
+    }
+    //Complexity - O(n)
+    private void printAllCities(){
         System.out.println("List of all cities: ");
         for (int i = 0; i < this.cities.length; i++){
             System.out.println(i + 1 +". " + this.cities[i]);
         }
     }
     //Complexity - O(n)
-    public void printAllCityStreets(City city){
+    private void printAllCityStreets(City city){
         System.out.println("List of all streets: ");
         String[] streets = city.getStreets();
         for (int i = 0; i < streets.length; i++){
@@ -319,7 +369,7 @@ public class RealEstate {
         }
     }
     //Complexity - O(n)
-    public String checkIfStreetExists(City city, String street){
+    private String checkIfStreetExists(City city, String street){
         String streetExists = "";
         String[] streets = city.getStreets();
         for (int i = 0; i < streets.length; i++){
@@ -331,7 +381,7 @@ public class RealEstate {
         return streetExists;
     }
     //Complexity - O(n)
-    public City checkIfCityExists(String city){
+    private City checkIfCityExists(String city){
         City cityExists = null;
         for (int i = 0; i < this.cities.length; i++){
             if (city.equals(this.cities[i].getName())){
@@ -341,9 +391,13 @@ public class RealEstate {
         }
         return cityExists;
     }
-    //Complexity -
+    //Complexity - O(n)
     private Property[] search (){
         Property[] search = null;
+        Property[] temp = new Property[this.properties.length];
+        for (int i = 0; i < this.properties.length; i++){
+            temp[i] = this.properties[i];
+        }
         int searchIndex = 0;
         String propertyType, rentOrSale, isForRent;
         int rooms, minPrice, maxPrice;
@@ -366,38 +420,54 @@ public class RealEstate {
         System.out.println("Enter max:");
         maxPrice = scanner.nextInt();
         scanner.nextLine();
-
-        // TO DO: Add run on properties with filters.
-
+        search = filterProperties(temp, propertyType, isForRent, rooms, minPrice, maxPrice);
         return search;
     }
-    //Complexity -
-    public void showUserMenu(User user){
-        if (user == null){
-            System.out.println("Wrong username/password.");
-        } else {
-            int userInput;
-            do{
-                System.out.println("Welcome to the Bulletin Board!");
-                System.out.println("1- Publish Property");
-                System.out.println("2- Remove property advertisement");
-                System.out.println("3- Show all properties");
-                System.out.println("4- Show all user properties");
-                System.out.println("5- Search for property");
-                System.out.println("6- Logout");
-                userInput = scanner.nextInt();
-                scanner.nextLine();
-                switch (userInput){
-                    case POST_PROPERTY -> validatePost(postNewProperty(user));
-                    case REMOVE_PROPERTY_AD -> removeProperty(user);
-                    case SHOW_ALL_PROPERTIES -> printAllProperties();
-                    case ALL_USER_PROPERTIES -> printUserProperties(user);
-                    case SEARCH_FOR_PROPERTY -> System.out.println();
-                    case LOGOUT -> System.out.println("Logged out successfully");
-                    default -> System.out.println("Wrong input, try again");
-                }
-            }while (userInput != LOGOUT);
+    //Complexity - O(n)
+    private Property[] filterProperties(Property[] toFilter, String type, String isForRent, int rooms, int minPrice, int maxPrice){
+        int invalidProperties = 0;
+        for (int i = 0; i < toFilter.length; i++){
+            if (!type.equals(IGNORE_SEARCH) && !type.equals(toFilter[i].getType())){
+                toFilter[i] = null;
+                invalidProperties++;
+                break;
+            }
+            if (!isForRent.equals(IGNORE_SEARCH) && !isForRent.equals(toFilter[i].getIsForRent())){
+                toFilter[i] = null;
+                invalidProperties++;
+                break;
+            }
+            if (rooms != Integer.parseInt(IGNORE_SEARCH) && rooms != toFilter[i].getRooms()){
+                toFilter[i] = null;
+                invalidProperties++;
+                break;
+            }
+            if ((minPrice != Integer.parseInt(IGNORE_SEARCH)) && toFilter[i].getPrice() < minPrice){
+                toFilter[i] = null;
+                invalidProperties++;
+                break;
+            }
+            if ((maxPrice != Integer.parseInt(IGNORE_SEARCH)) && toFilter[i].getPrice() > maxPrice){
+                toFilter[i] = null;
+                invalidProperties++;
+                break;
+            }
         }
-
+        Property[] filtered = new Property[this.properties.length - invalidProperties];
+        int index = 0;
+        for (int i = 0; i < toFilter.length; i++){
+            if (toFilter[i] != null){
+                filtered[index] = toFilter[i];
+                index++;
+            }
+        }
+        return filtered;
+    }
+    //Complexity - O(n)
+    private void printFilteredProperties(Property[] filtered){
+        System.out.println("Search results:");
+        for (int i = 0; i < filtered.length; i++){
+            System.out.println(i+1+". "+filtered[i]);
+        }
     }
 }
