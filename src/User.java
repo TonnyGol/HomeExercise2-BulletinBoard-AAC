@@ -19,4 +19,14 @@ public class User {
     public String getPhoneNumber(){return this.phoneNum;}
     //Complexity - O(1)
     public boolean getIsMediator(){return this.isMediator;}
+    //Complexity - O(1)
+    public boolean checkCredentials(String username, String password){
+        boolean checkValid = false;
+        if(this.getUserName().equals(username)){
+            if (this.getPassword().equals(password)){
+                checkValid = true;
+            }
+        }
+        return checkValid;
+    }
 }

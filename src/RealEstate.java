@@ -9,10 +9,12 @@ public class RealEstate {
     private City[] cities;
 
     Scanner scanner = new Scanner(System.in);
+
     private static final String[] CITY_REGION_BANK = {"South", "Center", "North"};
     private static final String[] ASHKELON_STREET_NAMES = {"Ort", "Eli Cohen", "Hanasi"};
     private static final String[] CITY_NAME_BANK = {"Ashkelon", "Tel Aviv", "Haifa", "Ashdod", "Jerusalem",
             "Bat Yam", "Eilat", "Netanya", "Petah Tikva", "Rehovot"};
+
     private static final String[] SPECIAL_CHARACTER_BANK = {"$", "_", "%"};
     private static final int[] BANK_OF_DIGITS = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
@@ -87,11 +89,15 @@ public class RealEstate {
             phone = scanner.nextLine();
         }while (!isValidPhoneNumber(phone));
 
-        System.out.println("Are you mediator? Y/N (Default is No.)");
+        System.out.println("Are you mediator? YES/NO (Default is No.)");
         mediatorIndicate = scanner.nextLine();
-        if (mediatorIndicate.toUpperCase().equals("Y")){
+        if (mediatorIndicate.toUpperCase().equals("YES")){
             isMediator = true;
+            System.out.println("Your account is mediator.");
+        }else {
+            System.out.println("Your account is regular user.");
         }
+
         User user = new User(username, password, phone, isMediator);
         addUser(user);
     }
@@ -112,12 +118,11 @@ public class RealEstate {
         username = scanner.nextLine();
         System.out.println("Enter your password");
         password = scanner.nextLine();
-        for (int i=0; i<this.users.length;i++){
-            if(this.users[i].getUserName().equals(username)){
-                if (this.users[i].getPassword().equals(password)){
-                    user = this.users[i];
-                    break;
-                }
+        for (int i = 0; i < this.users.length; i++){
+            if(this.users[i].checkCredentials(username, password)){
+                user = this.users[i];
+                System.out.println("Logged in as: "+username);
+                break;
             }
         }
         return user;
@@ -222,14 +227,15 @@ public class RealEstate {
         }
         if (canPost){
             printAllCities();
-            System.out.println("Enter city name:");
+            System.out.println("Enter city name out of list:");
             String cityChoice = scanner.nextLine();
             City validCity = checkIfCityExists(cityChoice);
             if (validCity != null){
                 printAllCityStreets(validCity);
-                System.out.println("Enter street name:");
+                System.out.println("Enter street name out of list:");
                 String streetChoice = scanner.nextLine();
                 if (streetChoice.equals(checkIfStreetExists(validCity,streetChoice))){
+                    System.out.println("What is the property type?");
                     System.out.println("1. Regular Apartment ");
                     System.out.println("2. Penthouse");
                     System.out.println("3. Private House");
@@ -239,8 +245,7 @@ public class RealEstate {
                         createProperty(floor, user, validCity, streetChoice, HOUSE);
                     } else if (propertyType.equals("1") || propertyType.equals("2")) {
                         System.out.println("Enter floor number:");
-                        floor = scanner.nextInt();
-                        scanner.nextLine();
+                        floor = Integer.parseInt(scanner.nextLine());
                         propertyType = propertyType.equals("1") ? APARTMENT : PENTHOUSE;
                         createProperty(floor, user, validCity, streetChoice, propertyType);
                     } else {
@@ -263,17 +268,14 @@ public class RealEstate {
         int propertyNumber, rooms, price;
         String rentOrSale, isForRent;
         System.out.println("Enter number of rooms:");
-        rooms = scanner.nextInt();
-        scanner.nextLine();
+        rooms = Integer.parseInt(scanner.nextLine());
         System.out.println("Enter property number:");
-        propertyNumber = scanner.nextInt();
-        scanner.nextLine();
-        System.out.println("Is the property for sale or rent? S- Sale / R- Rent");
+        propertyNumber = Integer.parseInt(scanner.nextLine());
+        System.out.println("Is the property for sale or rent? R- Rent / S- Sale (Default is for Sale.)");
         rentOrSale = scanner.nextLine();
         isForRent = rentOrSale.toUpperCase().equals("R") ? "for rent" : "for sale";
         System.out.println("Enter the price for the property:");
-        price = scanner.nextInt();
-        scanner.nextLine();
+        price = Integer.parseInt(scanner.nextLine());
         Property property = new Property(city, street, rooms, price, type, isForRent, propertyNumber, floor, publisher);
         addProperty(property);
     }
@@ -328,6 +330,7 @@ public class RealEstate {
             }
         }
     }
+    //Complexity - O(n)
     private boolean checkPropertyByNumber(String number){
         boolean isExists = false;
         for (int i = 0; i < this.properties.length; i++){
@@ -342,14 +345,18 @@ public class RealEstate {
     private void printAllProperties(){
         System.out.println("List of all properties");
         for (int i = 0; i < this.properties.length; i++){
-            System.out.println(i+1+". "+this.properties[i]);
+            System.out.println(i+1+".");
+            System.out.println(this.properties[i]);
+            System.out.println("------------------------");
         }
     }
     //Complexity - O(n)
     private void printUserProperties(User user){
         for (int i = 0; i < this.properties.length; i++){
             if (this.properties[i].getPublisher().getUserName().equals(user.getUserName())){
+                System.out.println(i+1+".");
                 System.out.println(this.properties[i]);
+                System.out.println("------------------------");
             }
         }
     }
@@ -357,7 +364,7 @@ public class RealEstate {
     private void printAllCities(){
         System.out.println("List of all cities: ");
         for (int i = 0; i < this.cities.length; i++){
-            System.out.println(i + 1 +". " + this.cities[i]);
+            System.out.println(i+1 +". " + this.cities[i]);
         }
     }
     //Complexity - O(n)
@@ -393,12 +400,11 @@ public class RealEstate {
     }
     //Complexity - O(n)
     private Property[] search (){
-        Property[] search = null;
+        Property[] search;
         Property[] temp = new Property[this.properties.length];
         for (int i = 0; i < this.properties.length; i++){
             temp[i] = this.properties[i];
         }
-        int searchIndex = 0;
         String propertyType, rentOrSale, isForRent;
         int rooms, minPrice, maxPrice;
         System.out.println("Is the property for sale or rent? (R- Rent / S- Sale / -999 -> ignore)");
@@ -430,27 +436,26 @@ public class RealEstate {
             if (!type.equals(IGNORE_SEARCH) && !type.equals(toFilter[i].getType())){
                 toFilter[i] = null;
                 invalidProperties++;
-                break;
+                continue;
             }
             if (!isForRent.equals(IGNORE_SEARCH) && !isForRent.equals(toFilter[i].getIsForRent())){
                 toFilter[i] = null;
                 invalidProperties++;
-                break;
+                continue;
             }
             if (rooms != Integer.parseInt(IGNORE_SEARCH) && rooms != toFilter[i].getRooms()){
                 toFilter[i] = null;
                 invalidProperties++;
-                break;
+                continue;
             }
-            if ((minPrice != Integer.parseInt(IGNORE_SEARCH)) && toFilter[i].getPrice() < minPrice){
+            if (minPrice != Integer.parseInt(IGNORE_SEARCH) && toFilter[i].getPrice() < minPrice){
                 toFilter[i] = null;
                 invalidProperties++;
-                break;
+                continue;
             }
-            if ((maxPrice != Integer.parseInt(IGNORE_SEARCH)) && toFilter[i].getPrice() > maxPrice){
+            if (maxPrice != Integer.parseInt(IGNORE_SEARCH) && toFilter[i].getPrice() > maxPrice){
                 toFilter[i] = null;
                 invalidProperties++;
-                break;
             }
         }
         Property[] filtered = new Property[this.properties.length - invalidProperties];
@@ -467,7 +472,9 @@ public class RealEstate {
     private void printFilteredProperties(Property[] filtered){
         System.out.println("Search results:");
         for (int i = 0; i < filtered.length; i++){
-            System.out.println(i+1+". "+filtered[i]);
+            System.out.println(i+1+".");
+            System.out.println(filtered[i]);
+            System.out.println("------------------------");
         }
     }
 }

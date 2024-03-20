@@ -33,9 +33,9 @@ public class Property {
         propertyInfo += ".\nPrice: "+addCommasToPrice(String.valueOf(this.price))+
                 "$."+"\nContact info: "+this.publisher.getUserName()+" "+this.publisher.getPhoneNumber();
         if (this.publisher.getIsMediator()){
-            propertyInfo += " (real estate broker).";
+            propertyInfo += " (Real estate broker).";
         }else {
-            propertyInfo += " (private user).";
+            propertyInfo += " (Private user).";
         }
         return propertyInfo;
     }

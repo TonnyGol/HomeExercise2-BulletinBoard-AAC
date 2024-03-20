@@ -18,7 +18,7 @@ public class City {
 
     //Complexity - O(1)
     public String toString(){
-        return "Name: " + this.name + " Region: " + this.region;
+        return "Name: " + this.name + ", Region: " + this.region;
     }
 
     //Complexity - O(1)
