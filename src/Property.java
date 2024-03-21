@@ -32,7 +32,7 @@ public class Property {
         }
         propertyInfo += ".\nPrice: "+addCommasToPrice(String.valueOf(this.price))+
                 "$."+"\nContact info: "+this.publisher.getUserName()+" "+this.publisher.getPhoneNumber();
-        if (this.publisher.getIsMediator()){
+        if (this.publisher.getIsBroker()){
             propertyInfo += " (Real estate broker).";
         }else {
             propertyInfo += " (Private user).";

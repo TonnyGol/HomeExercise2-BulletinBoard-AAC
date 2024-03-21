@@ -2,14 +2,17 @@ public class User {
     private String username;
     private String password;
     private String phoneNum;
-    private boolean isMediator;
+    private boolean isBroker;
+
+    private static final int POST_LIMIT_BROKER = 5;
+    private static final int POST_LIMIT_REGULAR_USER = 2;
 
     //Complexity - O(1)
-    public User(String username, String password, String phone, boolean isMediator) {
+    public User(String username, String password, String phone, boolean isBroker) {
         this.username = username;
         this.password = password;
         this.phoneNum = phone;
-        this.isMediator = isMediator;
+        this.isBroker = isBroker;
     }
     //Complexity - O(1)
     public String getUserName() {return this.username;}
@@ -18,7 +21,9 @@ public class User {
     //Complexity - O(1)
     public String getPhoneNumber(){return this.phoneNum;}
     //Complexity - O(1)
-    public boolean getIsMediator(){return this.isMediator;}
+    public boolean getIsBroker(){return this.isBroker;}
+    //Complexity - O(1)
+    public int getPostLimit(){return this.getIsBroker() ? POST_LIMIT_BROKER : POST_LIMIT_REGULAR_USER;}
     //Complexity - O(1)
     public boolean checkCredentials(String username, String password){
         boolean checkValid = false;
