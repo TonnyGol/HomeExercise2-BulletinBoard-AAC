@@ -14,6 +14,18 @@ public class User {
         this.phoneNum = phone;
         this.isBroker = isBroker;
     }
+
+    //Complexity - 0(1)
+    public String toString(){
+        String userInfo = this.getUserName()+" "+this.getPhoneNumber();
+        if (this.getIsBroker()){
+            userInfo += " (Real estate broker).";
+        }else {
+            userInfo += " (Private user).";
+        }
+        return userInfo;
+    }
+
     //Complexity - O(1)
     public String getUserName() {return this.username;}
     //Complexity - O(1)

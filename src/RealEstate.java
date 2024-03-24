@@ -1,4 +1,3 @@
-import java.util.Random;
 import java.util.Scanner;
 
 public class RealEstate {
@@ -9,9 +8,10 @@ public class RealEstate {
     Scanner scanner = new Scanner(System.in);
 
     private static final String[] CITY_REGION_BANK = {"South", "Center", "North"};
-    private static final String[] ASHKELON_STREET_NAMES = {"Ort", "Eli Cohen", "Hanasi"};
+    private static final String[] STREET_NAMES = {"Ort", "Namir","Arlozorov", "Rova", "Benyehuda","Arlosoroff", "Admon","Doplhin", "Amos",
+     "Agmon","Hanasi","Allenby","Derechhayam", "Balfour", "Dizengoff", "Abarbanel", "Almogim", "Alterman", "Amsterdam", "Makov"};
     private static final String[] CITY_NAME_BANK = {"Ashkelon", "Tel Aviv", "Haifa", "Ashdod", "Jerusalem",
-            "Bat Yam", "Eilat", "Netanya", "Petah Tikva", "Rehovot"};
+            "Netanya", "Eilat", "Bat Yam", "Petah Tikva", "Rehovot"};
 
     private static final String[] SPECIAL_CHARACTER_BANK = {"$", "_", "%"};
     private static final int[] BANK_OF_DIGITS = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -38,16 +38,18 @@ public class RealEstate {
 
     //Complexity - O(n)
     public RealEstate(){
-        Random random = new Random();
         this.users = new User[0];
         this.properties = new Property[0];
         this.cities = new City[10];
-        this.cities[0] = new City(CITY_NAME_BANK[0], CITY_REGION_BANK[0], ASHKELON_STREET_NAMES);
-        this.cities[1] = new City(CITY_NAME_BANK[1], CITY_REGION_BANK[1]);
-        this.cities[2] = new City(CITY_NAME_BANK[2], CITY_REGION_BANK[2]);
-        for (int i = 3; i < CITY_NAME_BANK.length; i++){
-            String region = CITY_REGION_BANK[random.nextInt(3)];
+        int regionBankIndex = 0;
+        for (int i = 0; i < CITY_NAME_BANK.length; i++){
+            String region = CITY_REGION_BANK[regionBankIndex];
             this.cities[i] = new City(CITY_NAME_BANK[i], region);
+            this.cities[i].addStreet(STREET_NAMES[i]);
+            if (regionBankIndex == 2){
+                regionBankIndex = -1;
+            }
+            regionBankIndex++;
         }
     }
 

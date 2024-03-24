@@ -44,5 +44,14 @@ public class City {
             System.out.println(i + 1 + ". " + this.streets[i]);
         }
     }
+    //Complexity - O(n)
+    public void addStreet(String street){
+        String[] temp = new String[streets.length+1];
+        for (int i = 0; i < streets.length; i++){
+            temp[i] = this.streets[i];
+        }
+        temp[temp.length-1] = street;
+        this.streets = temp;
+    }
 }
 
