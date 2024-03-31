@@ -10,10 +10,11 @@ public class City {
         this.streets = new String[0];
     }
     //Complexity - O(1)
-    public City(String name, String region, String[] streets){
+    public City(String name, String region, String street){
         this.name = name;
         this.region = region;
-        this.streets = streets;
+        this.streets = new String[1];
+        this.streets[0] = street;
     }
 
     //Complexity - O(1)
@@ -43,15 +44,6 @@ public class City {
         for (int i = 0; i < this.streets.length; i++){
             System.out.println(i + 1 + ". " + this.streets[i]);
         }
-    }
-    //Complexity - O(n)
-    public void addStreet(String street){
-        String[] temp = new String[streets.length+1];
-        for (int i = 0; i < streets.length; i++){
-            temp[i] = this.streets[i];
-        }
-        temp[temp.length-1] = street;
-        this.streets = temp;
     }
 }
 

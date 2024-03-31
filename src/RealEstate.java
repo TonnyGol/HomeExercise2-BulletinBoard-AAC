@@ -8,8 +8,7 @@ public class RealEstate {
     Scanner scanner = new Scanner(System.in);
 
     private static final String[] CITY_REGION_BANK = {"South", "Center", "North"};
-    private static final String[] STREET_NAMES = {"Ort", "Namir","Arlozorov", "Rova", "Benyehuda","Arlosoroff", "Admon","Doplhin", "Amos",
-     "Agmon","Hanasi","Allenby","Derechhayam", "Balfour", "Dizengoff", "Abarbanel", "Almogim", "Alterman", "Amsterdam", "Makov"};
+    private static final String[] STREET_NAMES_BANK = {"Ort", "Namir","Arlozorov", "Rova", "Benyehuda","Arlosoroff", "Admon","Doplhin", "Amos", "Agmon"};
     private static final String[] CITY_NAME_BANK = {"Ashkelon", "Tel Aviv", "Haifa", "Ashdod", "Jerusalem",
             "Netanya", "Eilat", "Bat Yam", "Petah Tikva", "Rehovot"};
 
@@ -36,7 +35,7 @@ public class RealEstate {
     private static final String LOGOUT = "6";
 
 
-    //Complexity - O(n)
+    //Complexity - O(1)
     public RealEstate(){
         this.users = new User[0];
         this.properties = new Property[0];
@@ -44,8 +43,7 @@ public class RealEstate {
         int regionBankIndex = 0;
         for (int i = 0; i < CITY_NAME_BANK.length; i++){
             String region = CITY_REGION_BANK[regionBankIndex];
-            this.cities[i] = new City(CITY_NAME_BANK[i], region);
-            this.cities[i].addStreet(STREET_NAMES[i]);
+            this.cities[i] = new City(CITY_NAME_BANK[i], region, STREET_NAMES_BANK[i]);
             if (regionBankIndex == 2){
                 regionBankIndex = -1;
             }
@@ -366,7 +364,7 @@ public class RealEstate {
         System.out.println("List of your properties");
         for (int i = 0; i < this.properties.length; i++){
             if (this.properties[i].getPublisher().getUserName().equals(user.getUserName())){
-                System.out.println(i+1+".");
+                System.out.println("Property Number- "+this.properties[i].getPropertyNumber()+".");
                 System.out.println(this.properties[i]);
                 System.out.println("------------------------");
             }
@@ -399,7 +397,7 @@ public class RealEstate {
         }
         String propertyType, rentOrSale, isForRent, propertyIndicator;
         int rooms, minPrice, maxPrice;
-        System.out.println("Is the property for sale or rent? (R- Rent / S- Sale / -999 -> ignore)");
+        System.out.println("Is the property for sale or rent? (R- Rent / S- Sale / -999 -> ignore), Wrong input filters for sale.");
         rentOrSale = scanner.nextLine();
         if (!rentOrSale.equals(IGNORE_SEARCH)) {
             isForRent = rentOrSale.toUpperCase().startsWith("R") ? "for rent" : "for sale";
