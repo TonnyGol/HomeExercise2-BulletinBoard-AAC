@@ -285,16 +285,7 @@ public class RealEstate {
         System.out.println("Enter the price for the property:");
         price = Integer.parseInt(scanner.nextLine());
         Property property = new Property(city, street, rooms, price, type, isForRent, propertyNumber, floor, publisher);
-        addProperty(property);
-    }
-    //Complexity - O(n)
-    private void addProperty(Property property){
-        Property[] temp = new Property[this.properties.length + 1];
-        for (int i = 0; i < this.properties.length; i++){
-            temp[i] = this.properties[i];
-        }
-        temp[temp.length - 1] = property;
-        this.properties = temp;
+        this.properties = addPropertyToArray(this.properties, property);
     }
     //Complexity - O(1)
     private void validatePost(boolean isPropertySaved){
@@ -303,6 +294,15 @@ public class RealEstate {
         }else {
             System.out.println("Failed to save property");
         }
+    }
+    //Complexity - O(n)
+    private Property[] addPropertyToArray(Property[] arr, Property toAdd){
+        Property[] temp = new Property[arr.length+1];
+        for (int i = 0; i < arr.length; i++){
+            temp[i] = arr[i];
+        }
+        temp[arr.length] = toAdd;
+        return temp;
     }
     //Complexity - O(n)
     private void removeProperty(User user){
@@ -325,15 +325,6 @@ public class RealEstate {
                 System.out.println("Choice doesn't exist");
             }
         }
-    }
-    //Complexity - O(n)
-    private Property[] addPropertyToArray(Property[] arr, Property toAdd){
-        Property[] temp = new Property[arr.length+1];
-        for (int i = 0; i < arr.length; i++){
-            temp[i] = arr[i];
-        }
-        temp[arr.length] = toAdd;
-        return temp;
     }
     //Complexity - O(n)
     private Property[] removePropertyFromArray(Property[] arr, Property toRemove){
@@ -366,7 +357,7 @@ public class RealEstate {
     }
     //Complexity - O(n)
     private void printUserProperties(User user){
-        System.out.println("List of your properties");
+        System.out.println("List of properties by user - "+user.getUserName());
         for (int i = 0; i < this.properties.length; i++){
             if (this.properties[i].getPublisher().getUserName().equals(user.getUserName())){
                 System.out.println(i+1+".");
