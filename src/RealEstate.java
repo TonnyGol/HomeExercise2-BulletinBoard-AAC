@@ -167,6 +167,7 @@ public class RealEstate {
                 for (int i = 0; i < SPECIAL_CHARACTER_BANK.length; i++){
                     if (password.contains(SPECIAL_CHARACTER_BANK[i])){
                         isStrong = true;
+                        break;
                     }
                 }
             }
@@ -321,6 +322,7 @@ public class RealEstate {
             userChoice = Integer.parseInt(scanner.nextLine());
             if (userProperties.length >= userChoice && userChoice >= 1) {
                 this.properties = removePropertyFromArray(this.properties, userProperties[userChoice-1]);
+                System.out.println("Property Removed successfully");
             } else {
                 System.out.println("Choice doesn't exist");
             }
@@ -343,7 +345,6 @@ public class RealEstate {
                 }
             }
         }
-        System.out.println("Property Removed successfully");
         return temp;
     }
     //Complexity - O(n)
@@ -357,12 +358,14 @@ public class RealEstate {
     }
     //Complexity - O(n)
     private void printUserProperties(User user){
+        int userProperties = 0;
         System.out.println("List of properties by user - "+user.getUserName());
         for (int i = 0; i < this.properties.length; i++){
             if (this.properties[i].getPublisher().getUserName().equals(user.getUserName())){
-                System.out.println(i+1+".");
+                System.out.println(userProperties+1+".");
                 System.out.println(this.properties[i]);
                 System.out.println("------------------------");
+                userProperties++;
             }
         }
     }
@@ -423,42 +426,33 @@ public class RealEstate {
     }
     //Complexity - O(n)
     private Property[] filterProperties(Property[] toFilter, String type, String isForRent, int rooms, int minPrice, int maxPrice){
-        int invalidProperties = 0;
         for (int i = 0; i < toFilter.length; i++){
             if (!type.equals(IGNORE_SEARCH) && !type.equals(toFilter[i].getType())){
-                toFilter[i] = null;
-                invalidProperties++;
+                toFilter = removePropertyFromArray(toFilter, toFilter[i]);
+                i--;
                 continue;
             }
             if (!isForRent.equals(IGNORE_SEARCH) && !isForRent.equals(toFilter[i].getIsForRent())){
-                toFilter[i] = null;
-                invalidProperties++;
+                toFilter = removePropertyFromArray(toFilter, toFilter[i]);
+                i--;
                 continue;
             }
             if (rooms != Integer.parseInt(IGNORE_SEARCH) && rooms != toFilter[i].getRooms()){
-                toFilter[i] = null;
-                invalidProperties++;
+                toFilter = removePropertyFromArray(toFilter, toFilter[i]);
+                i--;
                 continue;
             }
             if (minPrice != Integer.parseInt(IGNORE_SEARCH) && toFilter[i].getPrice() < minPrice){
-                toFilter[i] = null;
-                invalidProperties++;
+                toFilter = removePropertyFromArray(toFilter, toFilter[i]);
+                i--;
                 continue;
             }
             if (maxPrice != Integer.parseInt(IGNORE_SEARCH) && toFilter[i].getPrice() > maxPrice){
-                toFilter[i] = null;
-                invalidProperties++;
+                toFilter = removePropertyFromArray(toFilter, toFilter[i]);
+                i--;
             }
         }
-        Property[] filtered = new Property[this.properties.length - invalidProperties];
-        int index = 0;
-        for (int i = 0; i < toFilter.length; i++){
-            if (toFilter[i] != null){
-                filtered[index] = toFilter[i];
-                index++;
-            }
-        }
-        return filtered;
+        return toFilter;
     }
     //Complexity - O(n)
     private void printFilteredProperties(Property[] filtered){
