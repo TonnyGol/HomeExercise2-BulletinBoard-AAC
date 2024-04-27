@@ -44,10 +44,10 @@ public class RealEstate {
         for (int i = 0; i < CITY_NAME_BANK.length; i++){
             String region = CITY_REGION_BANK[regionBankIndex];
             this.cities[i] = new City(CITY_NAME_BANK[i], region, STREET_NAMES_BANK[i]);
-            if (regionBankIndex == 2){
-                regionBankIndex = -1;
-            }
             regionBankIndex++;
+            if (regionBankIndex == CITY_REGION_BANK.length){
+                regionBankIndex = 0;
+            }
         }
     }
 
@@ -306,49 +306,54 @@ public class RealEstate {
     }
     //Complexity - O(n)
     private void removeProperty(User user){
-        int publishedProperties = 0;
+        Property[] userProperties = new Property[0];
         for (int i = 0; i < this.properties.length; i++){
             if (this.properties[i].getPublisher().getUserName().equals(user.getUserName())){
-                publishedProperties++;
+                userProperties = addPropertyToArray(userProperties, this.properties[i]);
             }
         }
-        if (publishedProperties == 0){
+        if (userProperties.length == 0){
             System.out.println("No properties to remove");
         }else {
-            String propertyNum;
+            int userChoice;
             printUserProperties(user);
-            System.out.println("Enter property number to remove:");
-            propertyNum = scanner.nextLine();
-            int tempIndex = 0;
-            if (checkPropertyByNumberExists(propertyNum)) {
-                Property[] temp = new Property[this.properties.length - 1];
-                if (this.properties.length == 1) {
-                    this.properties = temp;
-                } else {
-                    for (int i = 0; i < this.properties.length; i++) {
-                        if (this.properties[i].getPropertyNumber() != Integer.parseInt(propertyNum)) {
-                            temp[tempIndex] = this.properties[i];
-                            tempIndex++;
-                        }
-                    }
-                    this.properties = temp;
-                }
-                System.out.println("Property Removed successfully");
+            System.out.println("Choose from list to remove:");
+            userChoice = Integer.parseInt(scanner.nextLine());
+            if (userProperties.length >= userChoice && userChoice >= 1) {
+                this.properties = removePropertyFromArray(this.properties, userProperties[userChoice-1]);
             } else {
-                System.out.println("Property number doesn't exist");
+                System.out.println("Choice doesn't exist");
             }
         }
     }
     //Complexity - O(n)
-    private boolean checkPropertyByNumberExists(String number){
-        boolean isExists = false;
-        for (int i = 0; i < this.properties.length; i++){
-            if (this.properties[i].getPropertyNumber() == Integer.parseInt(number)){
-                isExists = true;
-                break;
+    private Property[] addPropertyToArray(Property[] arr, Property toAdd){
+        Property[] temp = new Property[arr.length+1];
+        for (int i = 0; i < arr.length; i++){
+            temp[i] = arr[i];
+        }
+        temp[arr.length] = toAdd;
+        return temp;
+    }
+    //Complexity - O(n)
+    private Property[] removePropertyFromArray(Property[] arr, Property toRemove){
+        Property[] temp;
+        if (arr.length != 0) {
+            temp = new Property[arr.length - 1];
+        } else {
+            temp = new Property[0];
+        }
+        int tempIndex = 0;
+        if (arr.length != 1) {
+            for (int i = 0; i < arr.length; i++) {
+                if (arr[i] != toRemove) {
+                    temp[tempIndex] = arr[i];
+                    tempIndex++;
+                }
             }
         }
-        return isExists;
+        System.out.println("Property Removed successfully");
+        return temp;
     }
     //Complexity - O(n)
     private void printAllProperties(){
@@ -364,7 +369,7 @@ public class RealEstate {
         System.out.println("List of your properties");
         for (int i = 0; i < this.properties.length; i++){
             if (this.properties[i].getPublisher().getUserName().equals(user.getUserName())){
-                System.out.println("Property Number- "+this.properties[i].getPropertyNumber()+".");
+                System.out.println(i+1+".");
                 System.out.println(this.properties[i]);
                 System.out.println("------------------------");
             }
@@ -381,7 +386,7 @@ public class RealEstate {
     private City checkIfCityExists(String city){
         City cityExists = null;
         for (int i = 0; i < this.cities.length; i++){
-            if (city.equals(this.cities[i].getName())){
+            if (city.equalsIgnoreCase(this.cities[i].getName())){
                 cityExists = this.cities[i];
                 break;
             }

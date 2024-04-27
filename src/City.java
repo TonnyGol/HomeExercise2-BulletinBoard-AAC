@@ -31,7 +31,7 @@ public class City {
         boolean isExist = false;
         String[] streets = this.getStreets();
         for (int i = 0; i < streets.length; i++){
-            if (streets[i].equals(street)){
+            if (streets[i].equalsIgnoreCase(street)){
                 isExist = true;
                 break;
             }
