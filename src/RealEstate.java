@@ -8,7 +8,7 @@ public class RealEstate {
     Scanner scanner = new Scanner(System.in);
 
     private static final String[] CITY_REGION_BANK = {"South", "Center", "North"};
-    private static final String[] STREET_NAMES_BANK = {"Ort", "Namir","Arlozorov", "Rova", "Benyehuda","Arlosoroff", "Admon","Doplhin", "Amos", "Agmon"};
+    private static final String[] STREET_NAMES_BANK = {"Ort", "Namir","Arlozorov", "Rova", "Benyehuda","Agamim", "Admon","Dolphin", "Amos", "Agmon"};
     private static final String[] CITY_NAME_BANK = {"Ashkelon", "Tel Aviv", "Haifa", "Ashdod", "Jerusalem",
             "Netanya", "Eilat", "Bat Yam", "Petah Tikva", "Rehovot"};
 
@@ -387,7 +387,7 @@ public class RealEstate {
         }
         return cityExists;
     }
-    //Complexity - O(n)
+    //Complexity - O(n^2)
     private Property[] search (){
         Property[] search;
         Property[] temp = new Property[this.properties.length];
@@ -424,30 +424,14 @@ public class RealEstate {
         search = filterProperties(temp, propertyType, isForRent, rooms, minPrice, maxPrice);
         return search;
     }
-    //Complexity - O(n)
+    //Complexity - O(n^2)
     private Property[] filterProperties(Property[] toFilter, String type, String isForRent, int rooms, int minPrice, int maxPrice){
         for (int i = 0; i < toFilter.length; i++){
-            if (!type.equals(IGNORE_SEARCH) && !type.equals(toFilter[i].getType())){
-                toFilter = removePropertyFromArray(toFilter, toFilter[i]);
-                i--;
-                continue;
-            }
-            if (!isForRent.equals(IGNORE_SEARCH) && !isForRent.equals(toFilter[i].getIsForRent())){
-                toFilter = removePropertyFromArray(toFilter, toFilter[i]);
-                i--;
-                continue;
-            }
-            if (rooms != Integer.parseInt(IGNORE_SEARCH) && rooms != toFilter[i].getRooms()){
-                toFilter = removePropertyFromArray(toFilter, toFilter[i]);
-                i--;
-                continue;
-            }
-            if (minPrice != Integer.parseInt(IGNORE_SEARCH) && toFilter[i].getPrice() < minPrice){
-                toFilter = removePropertyFromArray(toFilter, toFilter[i]);
-                i--;
-                continue;
-            }
-            if (maxPrice != Integer.parseInt(IGNORE_SEARCH) && toFilter[i].getPrice() > maxPrice){
+            if ((!type.equals(IGNORE_SEARCH) && !type.equals(toFilter[i].getType()))
+                    || (!isForRent.equals(IGNORE_SEARCH) && !isForRent.equals(toFilter[i].getIsForRent()))
+                    || (rooms != Integer.parseInt(IGNORE_SEARCH) && rooms != toFilter[i].getRooms())
+                    || (minPrice != Integer.parseInt(IGNORE_SEARCH) && toFilter[i].getPrice() < minPrice)
+                    || (maxPrice != Integer.parseInt(IGNORE_SEARCH) && toFilter[i].getPrice() > maxPrice)){
                 toFilter = removePropertyFromArray(toFilter, toFilter[i]);
                 i--;
             }
